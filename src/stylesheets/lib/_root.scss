@@ -5,13 +5,24 @@
 
 body, html {
   color: #56585E;
-  font-family: "ff-meta-serif-web-pro", garamond;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 20px;
   font-weight: 200;
+  line-height: 1.5rem;
   min-height: 100vh;
   width: 100vw;
 }
 
 main {
+  section {
+    border-bottom: 1px solid #d9e5ec;
+    display: flex;
+    padding: 2rem 0;
+
+    &:last-child {
+      border: none;
+    }
+  }
+
   padding: 0 2rem;
 }

@@ -1,0 +1,26 @@
+.quick-links {
+  border: solid 1px #d9e5ec;
+  border-radius: 0.25rem;
+  flex-shrink: 0;
+  font-size: 16px;
+  margin-left: 1rem;
+  width: 30%;
+
+  nav {
+    background-color: #d9e5ec;
+    padding: 1rem;
+
+    &:nth-child( even ) {
+      background-color: #edf3f6;
+    }
+  }
+
+  li {
+    margin: 0.5rem 0;
+  }
+
+  a {
+    color: #1abc9c;
+    text-decoration: none;
+  }
+}

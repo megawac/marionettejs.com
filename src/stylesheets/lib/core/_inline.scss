@@ -1,13 +1,13 @@
 a {
-  color: #818285;
+  color: #00a6fc;
 
   &:hover {
-    text-decoration: none;
+    color: #0084c9;
   }
 }
 
 p {
-  line-height: 1rem;
+  font-family: "ff-meta-serif-web-pro", garamond;
   margin-bottom: 1rem;
 
   &:last-child {
