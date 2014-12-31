@@ -17,6 +17,7 @@ main {
   section {
     border-bottom: 1px solid #d9e5ec;
     display: flex;
+    flex-wrap: wrap;
     padding: 2rem 0;
 
     &:last-child {
