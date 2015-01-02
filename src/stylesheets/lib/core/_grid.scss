@@ -1,12 +1,13 @@
 @mixin columns ( $columns, $margin ) {
   &.column-#{$columns} > * {
-    max-width: calc( 100% / $columns - $margin );
+    max-width: calc( 100% / #{$columns} - #{$margin} );
   }
 }
 
 @mixin stretch ( $columns ) {
   .stretch-#{$columns} {
     flex-grow: $columns;
+    max-width: none;
   }
 }
 
@@ -23,21 +24,16 @@ section > header {
 }
 
 .row {
+  align-content: stretch;
   display: flex;
   flex-grow: 1;
   flex-shrink: 0;
+  margin: 0 -1rem 1rem;
   width: 100%;
 
   > * {
+    flex-grow: 1;
     margin: 0 1rem;
-
-    &:first-child {
-      margin-left: 0;
-    }
-
-    &:last-child {
-      margin-right: 0;
-    }
   }
 
   &[class *= column-] > * {

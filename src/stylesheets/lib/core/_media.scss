@@ -1,0 +1,27 @@
+.media {
+  border-bottom: 1px solid #ececec;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  &:after {
+    clear: both;
+    content: '';
+    display: block;
+    height: 0;
+    width: 100%;
+  }
+
+  .media-thumbnail {
+    float: left;
+    margin-right: 1rem;
+    max-width: 10rem;
+  }
+
+  .media-description {}
+}

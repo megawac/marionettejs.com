@@ -1,0 +1,21 @@
+.slider2 {
+  display: flex;
+  position: absolute;
+  right: 0;
+  top: 0.5rem;
+
+  span {
+    border: 1px solid #cf2227;
+    border-radius: 100%;
+    cursor: pointer;
+    display: block;
+    height: 0.5rem;
+    margin-left: 0.5rem;
+    width: 0.5rem;
+  }
+
+  span:hover,
+  .cycle-pager-active {
+    background-color: #cf2227;
+  }
+}
