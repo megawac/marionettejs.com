@@ -1,3 +1,15 @@
+@mixin columns ( $columns, $margin ) {
+  &.column-#{$columns} > * {
+    max-width: calc( 100% / $columns - $margin );
+  }
+}
+
+@mixin stretch ( $columns ) {
+  .stretch-#{$columns} {
+    flex-grow: $columns;
+  }
+}
+
 section > header,
 .row {
   margin-bottom: 1rem;
@@ -14,7 +26,6 @@ section > header {
   display: flex;
   flex-grow: 1;
   flex-shrink: 0;
-  flex-wrap: wrap;
   width: 100%;
 
   > * {
@@ -29,19 +40,15 @@ section > header {
     }
   }
 
-  &[class *= width-] > * {
+  &[class *= column-] > * {
     min-width: 15rem;
   }
 
-  &.width-2 > * {
-    max-width: calc( 100% / 2 - 2rem );
-  }
+  @include columns ( 2, 2rem );
+  @include columns ( 3, 2rem );
+  @include columns ( 4, 2rem );
 
-  &.width-3 > * {
-    max-width: calc( 100% / 3 - 2rem );
-  }
-
-  &.width-4 > * {
-    max-width: calc( 100% / 4 - 2rem );
-  }
+  @include stretch ( 2 );
+  @include stretch ( 3 );
+  @include stretch ( 4 );
 }
