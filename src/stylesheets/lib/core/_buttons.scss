@@ -6,19 +6,11 @@ button, .button {
 }
 
 .button-primary {
-  background-color: $seafoam;
+  background-color: $blue;
   color: white;
   text-decoration: none;
 
   &:hover {
-    background-color: $seafoam-hover;
-  }
-}
-
-.button-call-to-action {
-  background-color: $paypal-yellow;
-
-  &:hover {
-    background-color: $paypal-yellow-hover;
+    background-color: $blue-hover;
   }
 }

@@ -9,7 +9,8 @@ var rimraf       = Promise.promisify(require('rimraf'));
 var marked       = require('marked');
 var highlight    = require('highlight.js');
 var mv           = Promise.promisify(require('mv'));
-var semver       = require('semver');
+var validTags    = require('./utils/tags').valid;
+var GittyCache   = require('./utils/gitty-cache');
 
 var renderer = new marked.Renderer();
 var BLACKLIST_FILES = ['readme.md']
@@ -17,9 +18,9 @@ var BLACKLIST_FILES = ['readme.md']
 renderer.heading = function(text, level, raw) {
   var escapedText = raw
     .toLowerCase()
-    .replace(/[']/g, '') // Add edge cases: /[1|2|3]/g
+    .replace(/['\.]/g, '') // Add edge cases: /[1|2|3]/g
     .replace(/[^\w]+/g, '-')
-    .replace(/-$/, '');;
+    .replace(/-$/, '');
 
   return (
     '<h'+level+'>'+
@@ -32,7 +33,6 @@ renderer.heading = function(text, level, raw) {
 };
 
 marked.setOptions({
-  renderer: renderer,
   gfm: true,
   tables: true,
   breaks: false,
@@ -62,45 +62,43 @@ _.extend(Compiler.prototype, {
       .then(this.cleanup);
   },
 
-  remapInvalidTag: function(tag) {
-    if (tag == 'v0.4.1a') {
-      tag = 'v0.4.1-a';
-    } else if (tag == 'v1.7') {
-      tag = 'v1.7.0';
-    } else if (tag == 'v1.4.0beta') {
-      tag = 'v1.4.0-beta';
-    }
-
-    return tag;
-  },
-
-  sortTags: function(tags) {
-    return tags.sort(function(v1, v2) {
-      return semver.rcompare(this.remapInvalidTag(v1), this.remapInvalidTag(v2));
-    }.bind(this));
-  },
-
   setup: function() {
     return Promise.all([
       fs.readFileAsync(this.paths.template).call('toString'),
       fs.readFileAsync(this.paths.indexTemplate).call('toString'),
       mkdirp(this.paths.tmp),
-      this.repo.tagsAsync()
+      GittyCache.getSortedTags(this.repo)
     ]).bind(this).spread(function(template, indexTemplate, dir, tags) {
       this.template = _.template(template);
       this.indexTemplate = _.template(indexTemplate);
       this.tmpDir   = dir;
-      this.tags     = this.sortTags(tags)
+      this.tags     = tags
     });
   },
 
   compileContents: function(contents) {
-    var compiledContents = marked(contents);
+    var compiledContents = marked(contents, { renderer: renderer });
 
     // Strip out view the docs headline from each doc
     compiledContents = compiledContents.replace(/<h2\>.*View the new docs.*<\/h2>/, '');
 
+    // Attempts to replace extension of content links to other documents
+    compiledContents = compiledContents.replace(/.md/g, '.html');
+
     return compiledContents;
+  },
+
+  getPageTitle: function(compiledContents) {
+    var pageTitle;
+
+    // Grab the text inside the 1st <h1>
+    pageTitle = compiledContents.match(/<h1>([\s\S]*?)<\/h1>/)[1];
+
+    // Remove all other tags
+    pageTitle = pageTitle.replace(/<[^>]*>|Marionette./g, '');
+
+    //capitalize 1st letter
+    return pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1);
   },
 
   readFiles: function() {
@@ -117,13 +115,18 @@ _.extend(Compiler.prototype, {
       .map(function(filename) {
         var src = path.resolve(this.paths.src, filename);
         return fs.readFileAsync(src).bind(this).then(function(contents) {
+          var compiled = this.compileContents(contents.toString());
+          var basename = path.basename(filename, '.md');
+          var title = this.getPageTitle(compiled);
+
           this.emit('readFile', { file: src });
           return {
             tag      : tag,
-            basename : path.basename(filename, '.md'),
+            basename : basename,
             filenane : filename,
             pathname : path.resolve(this.paths.tmp, tag),
-            contents : this.compileContents(contents.toString())
+            contents : compiled,
+            title    : title || basename
           };
         });
       })
@@ -140,35 +143,43 @@ _.extend(Compiler.prototype, {
     });
   },
 
-  validTags: function() {
-    return _.chain(this.tags)
-    .map(this.remapInvalidTag)
-    .filter(_.partial(semver.lte, "v0.9.0"))
-    .value();
-  },
-
   // Write out markup for each tag index page
   writeTagIndexes: function() {
-    return Promise.bind(this).return(this.files).map(function(files) {
-      var indexPath = path.resolve(files[0].pathname, "index.html")
-      var indexMarkup = this.indexTemplate({
-        tags    : this.validTags(),
-        tag     : files[0].tag,
-        file    : files[0],
-        files   : files
-      });
-
-      // If this is the latest release ensure to write the /docs/current file
-      if (files[0].tag == this.tags[0]) {
-        return fs.writeFileAsync(indexPath, indexMarkup)
-        .then(function() {
-          var currentPath = path.resolve(files[0].pathname, "../", "current.html");
-          return fs.writeFileAsync(currentPath, indexMarkup);
+    return Promise.bind(this)
+      .then(function(){
+        GittyCache.getReleaseTag(this.repo)
+      })
+      .return(this.files).map(function(files) {
+        var indexPath = path.resolve(files[0].pathname, "index.html")
+        var indexContentMarkup = this.indexTemplate({
+          tags    : validTags(this.tags),
+          tag     : files[0].tag,
+          file    : files[0],
+          files   : files
         });
-      }
 
-      return fs.writeFileAsync(indexPath, indexMarkup);
-    });
+        var indexMarkup = this.template({
+          content : indexContentMarkup,
+          tags    : validTags(this.tags),
+          tag     : files[0].tag,
+          file    : files[0],
+          files   : files
+        });
+
+        // If this is the latest release ensure to write the /docs/current file
+        if (files[0].tag == GittyCache.releaseTag) {
+          return fs.writeFileAsync(indexPath, indexMarkup)
+          .then(function() {
+            var currentPath = path.resolve(files[0].pathname, '../current/');
+            var currentIndex = path.resolve(currentPath, 'index.html');
+            return mkdirp(currentPath).bind(this).then(function() {
+                return fs.writeFileAsync(currentIndex, indexMarkup);
+              });
+          });
+        }
+
+        return fs.writeFileAsync(indexPath, indexMarkup);
+      });
   },
 
   writeFiles: function() {
@@ -176,7 +187,7 @@ _.extend(Compiler.prototype, {
       return Promise.bind(this).return(files).map(function(file) {
         file.contents = this.template({
           content : file.contents,
-          tags    : this.validTags(),
+          tags    : validTags(this.tags),
           tag     : files[0].tag,
           file    : file,
           files   : files
@@ -218,18 +229,6 @@ _.extend(Compiler.prototype, {
         this.emit('rimraf', { dir: dir });
       });
     });
-  },
-
-  _readFile: function(file) {
-    return fs.readFileAsync(path.resolve(file)).call('toString');
-  },
-
-  _readDir: function(dir) {
-    return fs.readdirAsync(path.resolve(dir));
-  },
-
-  _writeFile: function(file, contents) {
-    return fs.writeFileAsync(path.resolve(file), contents);
   },
 
   finializeBuild: function() {

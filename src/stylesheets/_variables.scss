@@ -1,15 +1,16 @@
-$sans: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-$serif: "ff-meta-serif-web-pro", garamond;
+$sans: 'Questrial', sans-serif;
 
 $red: #cf2227;
+$aqua: #378dbe;
+$blue: #5da3cb;
+$blue-hover: darken($blue, 15%);
+$med-blue: #b7d9e9;
+$light-blue: #edf3f6;
+$dark-gray: #555;
 $gray: #818285;
-$med-gray: #BCBDC0;
-$light-grey: #ECECEC;
+$med-gray: #bcbdc0;
+$light-grey: #ececec;
 $seafoam: #1abc9c;
-$seafoam-hover: #17a689;
-$light-blue: #e3ecf1;
-$paypal-yellow: #ffbf5e;
-$paypal-yellow-hover: #ffb94f;
 $center_mw: 1200px;
 $center_pad: 25px;
 
@@ -19,8 +20,9 @@ $sm-breakpoint: 520px;
 
 $button-size: 36px;
 $small-font: 12px;
-$mid-font:   16px;
+$mid-font: 16px;
 $large-font: 20px;
+$xlarge-font: 30px;
 
 $col-1-3: 33%;
 $col-2-3: 66%;

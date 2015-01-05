@@ -38,6 +38,29 @@ $(document).ready(function() {
       $this.text(txt);
     });
 
+    // lazy load youtube videos
+    $('.play').on('click', function(e) {
+        e.preventDefault();
+
+        var $playButton = $(this),
+            $screenshot = $playButton.siblings('.vid-screenshot'),
+            vidId = $screenshot.attr('data-vid-id'),
+            vidParams = $screenshot.attr('data-vid-params'),
+            vidUrl = 'https://www.youtube.com/embed/' + vidId + '?autoplay=1&autohide=1';
+
+        vidUrl += (vidParams) ? '&' + vidParams : '';
+
+        var $iframe = $('<iframe/>', {
+            src: vidUrl,
+            width: '100%',
+            height: '320px',
+            allowFullScreen: '',
+            frameborder: '0'
+        });
+        $playButton.remove();
+        $screenshot.replaceWith($iframe);
+    });
+
     // Back to top button
     var offset = 300; //"back to top" button is shown
     var offset_opacity = 1200; //"back to top" button opacity is reduced
@@ -53,11 +76,34 @@ $(document).ready(function() {
     });
 
     //smooth scroll to top
-    $backToTopBtn.on('click', function(e){
+    function scrollToTop(e) {
         e.preventDefault();
         $('body, html').animate({
               scrollTop: 0
           }, scroll_top_duration
         );
+    }
+
+    $backToTopBtn.on('click', scrollToTop);
+
+    $logo = $('.left.logo');
+    $logo.on('click', scrollToTop);
+
+    // Twitter share window
+    $('.social.twitter').on('click', function(e) {
+        e.preventDefault();
+
+        var width  = 575,
+            height = 400,
+            left   = ($(window).width()  - width)  / 2,
+            top    = ($(window).height() - height) / 2,
+            url    = this.href,
+            opts   = 'status=1' +
+                     ',width='  + width  +
+                     ',height=' + height +
+                     ',top='    + top    +
+                     ',left='   + left;
+
+        window.open(url, 'twitter', opts);
     });
 });

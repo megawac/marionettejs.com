@@ -1,4 +1,5 @@
 var autoprefixer = require('autoprefixer-core');
+var GittyCache = require('./tasks/utils/gitty-cache');
 
 module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
@@ -7,8 +8,17 @@ module.exports = function(grunt) {
   grunt.loadTasks('tasks');
   grunt.loadTasks('backbone.marionette/tasks');
 
+  GittyCache.setReleaseTag(grunt.option('TAG'));
+
   grunt.config.merge({
-    'gitty:latestTag': {
+    'gitty:releaseTag': {
+      marionette: {
+        options: {
+          repo: 'backbone.marionette'
+        }
+      }
+    },
+    'gitty:checkoutTag': {
       marionette: {
         options: {
           repo: 'backbone.marionette'
@@ -23,6 +33,10 @@ module.exports = function(grunt) {
           output: 'dist/annotated-src/'
         }
       }
+    },
+
+    clean: {
+      dist: ['dist']
     },
 
     copy: {
@@ -82,13 +96,17 @@ module.exports = function(grunt) {
         files: 'src/stylesheets/**/*.scss',
         tasks: ['notify:preHTML', 'sass', 'postcss', 'notify:postHTML']
       },
+      scrips: {
+        files: 'src/js/**/*',
+        tasks: ['notify:preHTML', 'copy', 'notify:postHTML']
+      },
       assets: {
         files: 'src/images/**/*',
         tasks: ['copy']
       },
       pages: {
         files: 'src/**/*.jade',
-        tasks: ['notify:preHTML', 'jade', 'notify:postHTML']
+        tasks: ['notify:preHTML', 'compile-templates', 'notify:postHTML']
       }
     },
 
@@ -98,8 +116,10 @@ module.exports = function(grunt) {
           'dist/index.html': 'src/index.jade'
         },
         options: {
-          data: {
-            VERSION: grunt.option('VERSION') || 'V.X.X.X'
+          data: function(){
+            return {
+              VERSION: GittyCache.releaseTag || 'v.X.X.X'
+            };
           }
         }
       }
@@ -159,6 +179,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('dev', [
+    'clean:dist',
     'notify:watch',
     'watch'
   ]);
@@ -166,15 +187,21 @@ module.exports = function(grunt) {
   grunt.registerTask('compile-site', [
     'sass',
     'copy',
-    'jade',
+    'compile-templates',
     'postcss'
   ]);
 
+  grunt.registerTask('compile-templates', [
+    'gitty:releaseTag',
+    'jade'
+  ]);
+
   grunt.registerTask('compile-docs', [
+    'gitty:releaseTag',
     'compileDocs',
     'sass',
     'copy',
-    'gitty:latestTag'
+    'gitty:checkoutTag'
   ]);
 
   grunt.registerTask('compile-api', [
@@ -183,7 +210,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('compile-docco', [
-    'gitty:latestTag:marionette',
+    'gitty:checkoutTag:marionette',
     'docco:build'
   ]);
 
@@ -195,7 +222,6 @@ module.exports = function(grunt) {
     'compile-site',
     'compile-docs',
     'compile-docco',
-    'compile-downloads',
-    'compile-api'
+    'compile-downloads'
   ]);
 };

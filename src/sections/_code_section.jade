@@ -1,21 +1,21 @@
 section.hidden-xs#code-samples
   .code-sample-group
     .code-sample
-        h4 Setup
-        pre.prettyprint
-          code.
-            var SingleLink = Backbone.Marionette.ItemView.extend({
-              tagName: "li",
-              template: _.template("&lt;a href='<%%-path%>'><%%-path%>&lt;/a>")
-            });
+      h4 Define view classes
+      pre.prettyprint
+        code
+          var SingleLink = Marionette.ItemView.extend({
+            tagName: "li",
+            template: _.template("&lt;a href='<%-path%>'><%-path%>&lt;/a>")
+          });
 
-            var ListView = Backbone.Marionette.CollectionView.extend({
-              tagName: 'ul',
-              childView: SingleLink
-            });
+          var ListView = Marionette.CollectionView.extend({
+            tagName: 'ul',
+            childView: SingleLink
+          });
 
     .code-sample
-      h4 Using
+      h4.code-header Pass in data
       pre.prettyprint
         code.
           var list = new Backbone.Collection([

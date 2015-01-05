@@ -1,5 +1,7 @@
 @import "reset";
 
+$red : #CF2227;
+
 *,
 ::before,
 ::after {
@@ -13,31 +15,33 @@ html {
 
 body {
   margin: 0;
-  font: normal 1.1em/1.5 Georgia, Times, "Times New Roman", serif;
+  font: normal Georgia, Times, "Times New Roman", serif;
   -webkit-font-smoothing: antialiased;
   color: #56585E;
 }
 
 h1, h2, h3, h4, h5, h6 {
+  color: $red;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1.2em;
   font-weight: 300;
-  color: #cf2227;
+  margin: 1.6em 0 0.6em;
 
   .anchor {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    margin-left: -40px;
     background: #f1f1f1;
-    outline: none;
-    vertical-align: middle;
     border: 10px solid white;
     border-radius: 20px;
     color: #ccc;
-    text-decoration: none;
-    line-height: 20px;
+    display: inline-block;
     font-size: 18px;
+    height: 40px;
+    line-height: 20px;
+    margin-left: -40px;
+    outline: none;
     text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    width: 40px;
 
     &::before {
       content: "\25B8";
@@ -45,23 +49,37 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+h1 {
+  font-size: 1.6em;
+  margin-top: 0.6em;
+}
+
+strong {
+  font-weight: bold;
+}
+
 a {
-  color: #00a6fc;
+  color: #4695cb;
 }
 
 code {
-  padding: 0 0.2em;
   background: #f1f1f1;
   border-radius: 3px;
-  font-family: Monaco, Consolas, "Lucida Console", monospace;
-  font-size: 0.9em;
+  font-family: Menlo, Monaco, Consolas, "Lucida Console", monospace;
+  font-size: 0.8em;
+  padding: 0 0.2em;
+}
+
+p {
+  margin: 10px 0 25px;
 }
 
 pre {
-  padding: 10px;
   background: #f8f8f8;
   border-radius: 6px;
+  margin-bottom: 25px;
   overflow: auto;
+  padding: 10px;
 }
 
 pre code {
@@ -71,39 +89,128 @@ pre code {
 }
 
 .docs__sidebar {
-  position: fixed;
+  background: #EDF3F6;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   height: 100%;
   left: 0;
-  width: 300px;
   overflow: auto;
-}
+  position: fixed;
+  width: 220px;
 
-.docs__sidebar {
-  left: 0;
-  width: 300px;
-  padding: 10px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background: #EDF3F6;
-}
+  .styled-select {
+    background-color: #fff;
+    background-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 640 640"><path fill="#888" d="M495.456 274.016c-13.024 13.376-150.24 144.096-150.24 144.096-6.976 7.136-16.096 10.688-25.216 10.688-9.152 0-18.272-3.552-25.216-10.688 0 0-137.216-130.72-150.272-144.096-13.024-13.376-13.92-37.408 0-51.712 13.952-14.272 33.376-15.392 50.432 0l125.056 119.936 125.024-119.904c17.088-15.392 36.544-14.272 50.432 0 13.952 14.272 13.088 38.336 0 51.68z"></path></svg>');
+    background-repeat: no-repeat;
+    background-size: auto 14px;
+    background-position: right 7px top 50%;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 12%;
+    overflow: hidden;
+    width: 76%;
 
-.docs__sidebar select {
-  width: 100%;
-  font: inherit;
-}
+    select {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      color: #888;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.8em;
+      padding: 10px 12px;
+      -moz-appearance: window;
+      width: 100%;
+      // get rid of the focus border in Firefox
+      &:-moz-focusring {
+          color: transparent;
+          text-shadow: 0 0 0 #000;
+      }
 
-.docs__sidebar nav a {
-  display: block;
+      -webkit-appearance: none;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+      &:focus {
+          outline: none;
+      }
+
+      // removes the arrow in IE 10+
+      &::-ms-expand {
+          display: none;
+      }
+    }
+  }
+
+  nav {
+    margin: 27px 0 45px;
+    a {
+      display: block;
+      font-size: 0.8em;
+      padding: 0px 26% 15px;
+
+      &:hover, &.is-selected{
+        color: $red;
+      }
+    }
+  }
+
+  .top-bar{
+    background: $red;
+    height: 40px;
+    text-align: center;
+    a {
+      display: inline-block;
+      padding: 11px 7px;
+      text-decoration: none;
+
+      &:hover{
+        .svg-icon {
+          fill: #fff;
+        }
+      }
+    }
+    .svg-icon {
+      fill: rgba(255,255,255,0.75);
+    }
+  }
+
+  .primary-logo{
+    margin: 25px 25%;
+    text-align: center;
+    width: 50%;
+  }
 }
 
 .docs__content {
-  position: relative;
-  margin-left: 300px;
-  padding: 20px 40px;
   background: white;
+  line-height: 1.6;
+  margin-left: 220px;
+  max-width: 750px;
+  padding: 20px 45px;
+  position: relative;
+
+  ul {
+    line-height: 1.8;
+
+    ul { padding: 0 30px; }
+  }
+
+
+  blockquote {
+    border-left: 4px solid #ddd;
+    color: #777;
+    padding: 0 15px;
+  }
 }
 
-
-
+.index-nav{
+  -webkit-columns: 200px 3;
+  -moz-columns: 200px 3;
+  columns: 200px 3;
+  -webkit-column-gap: 10px;
+  -moz-column-gap: 10px;
+  column-gap: 10px;
+}
 
 /* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
 
