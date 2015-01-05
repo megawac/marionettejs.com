@@ -1,0 +1,22 @@
+.company-logo-list {
+  text-align: center;
+
+  li {
+    display: inline-block;
+  }
+
+  img {
+    margin: 1rem;
+    max-height: 3rem;
+  }
+}
+
+#extend-company-logo-list {
+  ~ .company-logo-list-extended {
+    display: none;
+  }
+
+  &:checked ~ .company-logo-list-extended {
+    display: block;
+  }
+}
