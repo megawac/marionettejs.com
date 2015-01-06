@@ -1,24 +1,18 @@
-.global-nav
-  section.column-contain
-    .left.logo
-      | Marionette
+header.global-header
+  .brand Marionette
 
-    ul.right
-      li.left
+  nav
+    ul
+      li
         a(href="docs/current") Docs
-        span.middot ·
-      li.left
+      li
         a(href="annotated-src/backbone.marionette.html") Annotated Source
-        span.middot ·
-      li.left
+      li
         a(href="http://marionettejs.github.io") Blog
-        span.middot ·
-      li.left
+      li
         a(href="https://github.com/marionettejs/backbone.marionette", target="_blank") GitHub
-      .clear
-    .clear
 
-.masthead
+header.masthead
   .wrapper
     .left
       img(src="images/marionette_logo.png", alt="Marionette.js – A scalable and composite application architecture for Backbone.js", class= "primary-logo")

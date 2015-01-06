@@ -1,3 +1,39 @@
+.global-header {
+  background-color: #cf2227;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  left: 0;
+  padding: 0.5rem;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 100;
+
+  nav {
+    font-size: 0.6em;
+  }
+
+  ul {
+    display: flex;
+  }
+
+  li {
+    &:after {
+      content: '\b7';
+      margin: 0 1rem;
+    }
+
+    &:last-child:after {
+      display: none;
+    }
+  }
+
+  a {
+    color: white;
+  }
+}
+
 .masthead,
 .ribbon {
   border-bottom: 1px solid #cbdce5;

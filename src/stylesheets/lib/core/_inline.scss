@@ -1,8 +1,10 @@
 a {
   color: #00a6fc;
+  text-decoration: none;
 
   &:hover {
     color: #0084c9;
+    text-decoration: underline;
   }
 }
 
