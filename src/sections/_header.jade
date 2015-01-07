@@ -1,5 +1,5 @@
 header.global-header
-  .brand Marionette
+  h1.brand Marionette
 
   nav
     ul
@@ -13,12 +13,12 @@ header.global-header
         a(href="https://github.com/marionettejs/backbone.marionette", target="_blank") GitHub
 
 header.masthead
-  .wrapper
-    .left
-      img(src="images/marionette_logo.png", alt="Marionette.js – A scalable and composite application architecture for Backbone.js", class= "primary-logo")
-    .right
-      h1 The Backbone Framework
-      h2 Marionette simplifies your Backbone application code with robust views and architecture solutions.
+  .row
+    img(src="images/marionette_logo.png", alt="Marionette.js – A scalable and composite application architecture for Backbone.js", class= "primary-logo")
+
+    div
+      h2 The Backbone Framework
+      p Marionette simplifies your Backbone application code with robust views and architecture solutions.
       a.btn.download-button(href = "#download")
         | Download&nbsp;
         span= VERSION
